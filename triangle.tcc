@@ -86,7 +86,7 @@ public:
 #else
 // optimized version
 bool intersects(Vector<T,3> origin, Vector<T,3> direction, FLOAT &t, FLOAT &u, FLOAT &v, FLOAT minimum_t) {
-  // Normalvektor
+  // Normal vector
   Vector<T, 3> normal =  cross_product(p2 - p1, p3  - p1);
   T normalRayProduct = normal.scalar_product(direction);
 
@@ -96,7 +96,7 @@ bool intersects(Vector<T,3> origin, Vector<T,3> direction, FLOAT &t, FLOAT &u, F
 
   T d = normal.scalar_product(p1);
   t = (d - normal.scalar_product(origin)) / normalRayProduct;
-  // 1. Optimerung: Falls t größer oder gleich dem aktuellen minimum_t ist, müssen keine neuen Berechnungen durchgeführt werden.
+  // 1. Optimization: If t bigger or equals to the current minimum_t, no further calculations needed.
   if (t >= minimum_t || t < 0.0) {
     return false;
   }
@@ -108,14 +108,14 @@ bool intersects(Vector<T,3> origin, Vector<T,3> direction, FLOAT &t, FLOAT &u, F
     return false;
   }
   
-  // Für u
+  // For u
   vector = cross_product(p3 - p2,  intersection - p2);
   if (normal.scalar_product(vector) < 0.0) { 
     return false;
   }
   T solU = vector.square_of_length();
 
-  // Für v
+  // For v
   vector = cross_product(p1 - p3, intersection - p3);
   if (normal.scalar_product(vector) < 0.0) {
     return false;
@@ -123,10 +123,10 @@ bool intersects(Vector<T,3> origin, Vector<T,3> direction, FLOAT &t, FLOAT &u, F
   T solV = vector.square_of_length();
   
   // u and v calculation
-  // 2. Optimierung: area wird nur dann berechnet wenn es auch wirklich benötigt wird.
+  // 2. Optimization: Area is now only then calculated, if it's necessary.
   T area = normal.square_of_length(); // used for u-v-parameter calculation
 
-  // 3. Optimierung: sqrt(a / b) statt sqrt(a) / sqrt(b)
+  // 3. Optimization: sqrt(value / area) instead of sqrt(value) / sqrt(area)
   u = sqrt(solU / area);
   v = sqrt(solV / area);
   
