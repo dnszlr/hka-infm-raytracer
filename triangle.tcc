@@ -87,7 +87,7 @@ public:
 // optimized version
 bool intersects(Vector<T,3> origin, Vector<T,3> direction, FLOAT &t, FLOAT &u, FLOAT &v, FLOAT minimum_t) {
   // Normal vector
-  Vector<T, 3> normal =  cross_product(p2 - p1, p3  - p1);
+  Vector<T, 3> normal = cross_product(p2 - p1, p3  - p1);
   T normalRayProduct = normal.scalar_product(direction);
 
   if (fabs(normalRayProduct) < EPSILON) {
@@ -113,18 +113,12 @@ bool intersects(Vector<T,3> origin, Vector<T,3> direction, FLOAT &t, FLOAT &u, F
   if (normal.scalar_product(vector) < 0.0) { 
     return false;
   }
-  // Current Vector state is saved in another vector for later computations.
-  Vector<T, 3> vectorTemp = vector;
-  // Version 2: Is slower because in some cases square of length gets computed even though the point is not inside the triangle.
-  //T solU = vector.square_of_length()
 
   // For v
-  vector = cross_product(p1 - p3, intersection - p3);
+  Vector<T, 3> vectorTemp = cross_product(p1 - p3, intersection - p3);
   if (normal.scalar_product(vector) < 0.0) {
     return false;
   }
-  // See line 118
-  //T solV = vector.square_of_length();
   
   // u and v calculation
   // 2. Optimization: Area is only computed when the value is actually needed.
@@ -132,12 +126,11 @@ bool intersects(Vector<T,3> origin, Vector<T,3> direction, FLOAT &t, FLOAT &u, F
 
   // 3. Optimization: sqrt(value / area) instead of sqrt(value) / sqrt(area).
   // This saves time, since sqrt is the more time-consuming operation.
-  u = sqrt(vectorTemp.square_of_length() / area);
-  v = sqrt(vector.square_of_length() / area);
+  u = sqrt(vector.square_of_length() / area);
+  v = sqrt(vectorTemp.square_of_length() / area);
   
   return true;
 }
 #endif
 
 };
-
