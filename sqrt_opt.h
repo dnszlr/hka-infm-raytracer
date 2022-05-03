@@ -9,8 +9,15 @@ template <size_t LOOPS = 2>
 float sqrt1(float * a) {
   float root;
   // from here
-  root = 0; // to avoid a warning, delete this in your code
   // TODO: your code
+  int * ai = reinterpret_cast<int *>(a);
+  int * initial = reinterpret_cast<int *>(&root);
+  * initial = (1 << 29) + (* ai >> 1) - (1 << 22) - 0x4C000;
+  root = * (reinterpret_cast<float *>(initial));
+  for(size_t i = 0; i < LOOPS; i++) {
+    root = 0.5 * (root + (* a / root));
+  }
+  //std::cout << "Square of " << * a << " is: " << root << std::endl;
   // to here
   return root;
 }
