@@ -16,12 +16,18 @@ double random_double()
 }
 
 template <size_t LOOPS = 2>
-void measure_sqrt_time(void) {
+void measure_sqrt_time(void) { // --> Segmentation error occurs here according to gdb https://stackoverflow.com/questions/3718998/fixing-segmentation-faults-in-c
+    // Eventuell mit 64 bit Version nochmal versuchen
     const static int LOOP = 1000;
-    const static int N = 100000;
+    //const static int N = 100000;
+    // Problem with the size of N? -> Segmentation error? Out of heap scope?
+    // TODO: Testen was beim Debuggen (in sqrt2) passiert, wenn der Code nicht abbricht in Funktion 2.
+    //const static int N = 64872;  -> Possible max value without segmentation error
+    const static int N = 50000;
     MeasureTime<std::chrono::nanoseconds> time;
     alignas(128) float floats[N * 4];
     alignas(128) float roots[N * 4];
+    //alignas(128) float * roots = new float[N * 4]; // To avoid segmentation error, reserve memory on the stack
 
     std::cout << LOOPS  << " iterations" << std::endl;
     std::cout << "generating " << (4 * N) << " random values..." << std::endl;
@@ -89,13 +95,14 @@ void measure_sqrt_time(void) {
     std::cout << "sqrt3 (Newton method for sequence of 4 floats, SIMD)" << std::endl;
     std::cout << time.time_clock().count() / LOOP  << " [ns]" << std::endl;
     time.reset_clock();
+    //delete [] roots;
 }
 
 int main(void) {
     measure_sqrt_time<2>();
     // uncomment next lines for disassembly
-    measure_sqrt_time<3>();
-    measure_sqrt_time<4>();
-    return 1;
+    // measure_sqrt_time<3>();
+    // measure_sqrt_time<4>();
+    return 0;
 }
 
