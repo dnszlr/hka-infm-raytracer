@@ -1,6 +1,7 @@
 #ifndef SQRT_OPT_H
 #define SQRT_OPT_H
 
+// https://gcc.gnu.org/onlinedocs/gcc-4.6.1/gcc/Vector-Extensions.html
 typedef float v4sf __attribute__ ((vector_size (16)));
 typedef int v4si __attribute__ ((vector_size (16)));
 
