@@ -39,7 +39,7 @@ void sqrt2(float * __restrict__ a, float * __restrict__ root) {
     root[2] = 0.5 * (root[2] + (a[2] / root[2]));
     root[3] = 0.5 * (root[3] + (a[3] / root[3]));
   }
-  std::cout << "Sqrt of " << a[3] << " is: " << root[3] << std::endl;
+  // std::cout << "Sqrt of " << a[3] << " is: " << root[3] << std::endl;
   // to here
 }
 

@@ -94,8 +94,8 @@ void measure_sqrt_time(void) {
 int main(void) {
     measure_sqrt_time<2>();
     // uncomment next lines for disassembly
-    // measure_sqrt_time<3>();
-    // measure_sqrt_time<4>();
+    measure_sqrt_time<3>();
+    measure_sqrt_time<4>();
     return 0;
 }
 
