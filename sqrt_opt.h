@@ -27,17 +27,19 @@ template <size_t LOOPS = 2>
 void sqrt2(float * __restrict__ a, float * __restrict__ root) {
   // from here
   // TODO: your code
-  int * ai = reinterpret_cast<int *>(a);
-  int * initial = reinterpret_cast<int *>(root);
-  * initial = (1 << 29) + (* ai >> 1) - (1 << 22) - 0x4C000;
-  root = reinterpret_cast<float *>(initial);
+  for(size_t i = 0; i < 4; i++) {
+    int * ai = reinterpret_cast<int *>(&a[i]);
+    int * initial = reinterpret_cast<int *>(&root[i]);
+    * initial = (1 << 29) + (* ai >> 1) - (1 << 22) - 0x4C000;
+    root[i] = * reinterpret_cast<float *>(initial);
+  }
   for(size_t j = 0; j < LOOPS; j++) {
     root[0] = 0.5 * (root[0] + (a[0] / root[0]));
     root[1] = 0.5 * (root[1] + (a[1] / root[1]));
     root[2] = 0.5 * (root[2] + (a[2] / root[2]));
     root[3] = 0.5 * (root[3] + (a[3] / root[3]));
   }
-  // std::cout << "Sqrt of " << a[3] << " is: " << root[3] << std::endl;
+  std::cout << "Sqrt of " << a[3] << " is: " << root[3] << std::endl;
   // to here
 }
 
