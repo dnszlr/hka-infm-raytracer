@@ -16,9 +16,10 @@ double random_double()
 }
 
 template <size_t LOOPS = 2>
-void measure_sqrt_time(void) {
+void measure_sqrt_time(void) { // --> Segmentation error occurs here according to gdb https://stackoverflow.com/questions/3718998/fixing-segmentation-faults-in-c
     const static int LOOP = 1000;
     const static int N = 50000;
+    //const static int N = 64872;  -> Possible max value without segmentation error
     MeasureTime<std::chrono::nanoseconds> time;
     alignas(128) float floats[N * 4];
     alignas(128) float roots[N * 4];
