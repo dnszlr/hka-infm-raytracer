@@ -7,9 +7,17 @@ BoundingBox::BoundingBox(Vector<FLOAT,3> min, Vector<FLOAT,3> max)
  : min(min), max(max) { }
 
 void BoundingBox::split(BoundingBox & left, BoundingBox & right) {
-  // from here
-  // TODO: your code
-  // to here
+  // axes[0] = x-axis, axes[1] = y-axis, axes[2] = z-axis
+  Vector<FLOAT, 3> axes = max - min;
+  // TODO Find biggest point in length and compute
+  // left.min, left.max & right.min, right.max
+  if(axes[0] > axes[1] && axes[1] > axes[2]) {
+    // TODO Compute for x-axis
+  } else if(axes[1] > axes[2]) {
+    // TODO Compute for y-axis
+  } else {
+    // TODO Compute for z-axis
+  }
 }
 
 bool BoundingBox::contains(Vector<FLOAT, 3> point) {
@@ -86,7 +94,7 @@ KDTree *  KDTree::buildTree(std::vector<Triangle<FLOAT> *> & triangles)  {
     }
   }
   root->box = * new BoundingBox(min, max);
-  return root;
+  return root->buildTree(root, triangles);
 }
 
 bool KDTree::hasNearestTriangle(Vector<FLOAT,3> eye, Vector<FLOAT,3> direction, Triangle<FLOAT> *  & nearest_triangle, FLOAT &t, FLOAT &u, FLOAT &v, FLOAT minimum_t) {
