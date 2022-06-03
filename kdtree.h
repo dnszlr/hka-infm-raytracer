@@ -9,8 +9,7 @@
 // a iso oriented bounding box (axis-aligned bounding-box, AABB)
 // defined by points with minimum and maximum coordinates
 class BoundingBox {
-  Vector<FLOAT,3> min,
-                  max;
+  Vector<FLOAT,3> min, max;
 private:
   // returns true iff v is contained in this bounding box
   bool contains(Vector<FLOAT, 3> v);
