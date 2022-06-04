@@ -7,16 +7,31 @@ BoundingBox::BoundingBox(Vector<FLOAT,3> min, Vector<FLOAT,3> max)
  : min(min), max(max) { }
 
 void BoundingBox::split(BoundingBox & left, BoundingBox & right) {
+  // ^ y   z
+  // |   /
+  // | /
+  // --------> x
   // axes[0] = x-axis, axes[1] = y-axis, axes[2] = z-axis
   Vector<FLOAT, 3> axes = max - min;
-  // TODO Find biggest point in length and compute
-  // left.min, left.max & right.min, right.max
-  if(axes[0] > axes[1] && axes[1] > axes[2]) {
-    // TODO Compute for x-axis
-  } else if(axes[1] > axes[2]) {
-    // TODO Compute for y-axis
-  } else {
-    // TODO Compute for z-axis
+  left.min = min;
+  right.max = max;
+  // Case x-axis
+  if(axes[0] > axes[1] && axes[0] > axes[2]) {
+    FLOAT x = (max[0] + min[0]) * 0.5f;
+    left.max = {x, max[1], max[2]};
+    right.min = {x, min[1], min[2]};
+  } 
+  // Case y-axis
+  else if(axes[1] > axes[2]) {
+    FLOAT y = (max[1] + min[1]) * 0.5f;
+    left.max = {max[0], y, max[2]};
+    right.min = {min[0], y, min[2]};
+  }
+  // Case z-axis
+  else {
+    FLOAT z = (max[2] + min[2]) * 0.5f;
+    left.max = {max[0], max[1], z};
+    right.min = {min[0], min[1], z};
   }
 }
 
@@ -81,25 +96,36 @@ KDTree * KDTree::buildTree(KDTree * tree, std::vector< Triangle<FLOAT> *> & tria
   return tree;
 }
 
-KDTree *  KDTree::buildTree(std::vector<Triangle<FLOAT> *> & triangles)  {
+KDTree * KDTree::buildTree(std::vector<Triangle<FLOAT> *> & triangles)  {
   KDTree * root = new KDTree();
   Vector<FLOAT, 3> min = triangles[0]->p1;
   Vector<FLOAT, 3> max = triangles[0]->p1;
   for(Triangle<FLOAT> * triangle : triangles) {
     for(size_t i = 0; i < SPACE_3D; i++) {
-      FLOAT current_min = std::min(triangle->p1[i], std::min(triangle->p2[i], triangle->p3[i]));
-      min[i] = std::min(min[i], current_min);
-      FLOAT current_max = std::max(triangle->p1[i], std::max(triangle->p2[i], triangle->p3[i]));
-      max[i] = std::max(max[i], current_max);
+      FLOAT current_min = triangle->p1[i] < triangle->p2[i] ? 
+                          (triangle->p1[i] < triangle->p3[i] ? triangle->p1[i] : triangle->p3[i]) : 
+                          (triangle->p2[i] < triangle->p3[i] ? triangle->p2[i] : triangle->p3[i]);
+      min[i] = min[i] <= current_min ? min[i] : current_min;
+      FLOAT current_max = triangle->p1[i] > triangle->p2[i] ? 
+                          (triangle->p1[i] > triangle->p3[i] ? triangle->p1[i] : triangle->p3[i]) : 
+                          (triangle->p2[i] > triangle->p3[i] ? triangle->p2[i] : triangle->p3[i]);
+      max[i] = max[i] >= current_max ? max[i] : current_max;
     }
   }
   root->box = * new BoundingBox(min, max);
   return root->buildTree(root, triangles);
 }
 
-bool KDTree::hasNearestTriangle(Vector<FLOAT,3> eye, Vector<FLOAT,3> direction, Triangle<FLOAT> *  & nearest_triangle, FLOAT &t, FLOAT &u, FLOAT &v, FLOAT minimum_t) {
+bool KDTree::hasNearestTriangle(Vector<FLOAT,3> eye, Vector<FLOAT,3> direction, Triangle<FLOAT> * & nearest_triangle, FLOAT &t, FLOAT &u, FLOAT &v, FLOAT minimum_t) {
   // from here
   // TODO: your code
   // to here
+  if(left != nullptr) {
+
+  }
+  if(right != nullptr) {
+
+  }
+
   return nearest_triangle != nullptr;
 }
