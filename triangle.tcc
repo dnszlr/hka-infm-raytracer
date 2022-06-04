@@ -97,7 +97,7 @@ bool intersects(Vector<T,3> origin, Vector<T,3> direction, FLOAT &t, FLOAT &u, F
   T d = normal.scalar_product(p1);
   t = (d - normal.scalar_product(origin)) / normalRayProduct;
   // 1. Optimization: If t bigger or equals to the current minimum_t, no further calculations needed.
-  if (t < 0.0 || t >= minimum_t) {
+  if (t < 0.0 || t > minimum_t) {
     return false;
   }
   
@@ -116,7 +116,7 @@ bool intersects(Vector<T,3> origin, Vector<T,3> direction, FLOAT &t, FLOAT &u, F
 
   // For v
   Vector<T, 3> vectorTemp = cross_product(p1 - p3, intersection - p3);
-  if (normal.scalar_product(vector) < 0.0) {
+  if (normal.scalar_product(vectorTemp) < 0.0) {
     return false;
   }
   
