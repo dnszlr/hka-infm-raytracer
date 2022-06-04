@@ -43,6 +43,7 @@ bool BoundingBox::contains(Vector<FLOAT, 3> point) {
 }
 
 bool BoundingBox::contains(Triangle<FLOAT> *triangle) {
+  
   return contains(triangle->p1) || contains(triangle->p2) || contains(triangle->p3);
 }
 
@@ -71,6 +72,7 @@ KDTree::~KDTree() {
 }
 
 KDTree * KDTree::buildTree(KDTree * tree, std::vector< Triangle<FLOAT> *> & triangles) {
+  
   if(triangles.size() < MAX_TRIANGLES_PER_LEAF) {
     this->triangles = triangles;
     return tree;
@@ -97,19 +99,20 @@ KDTree * KDTree::buildTree(KDTree * tree, std::vector< Triangle<FLOAT> *> & tria
 }
 
 KDTree * KDTree::buildTree(std::vector<Triangle<FLOAT> *> & triangles)  {
+  
   KDTree * root = new KDTree();
   Vector<FLOAT, 3> min = triangles[0]->p1;
   Vector<FLOAT, 3> max = triangles[0]->p1;
   for(Triangle<FLOAT> * triangle : triangles) {
     for(size_t i = 0; i < SPACE_3D; i++) {
-      FLOAT current_min = triangle->p1[i] < triangle->p2[i] ? 
-                          (triangle->p1[i] < triangle->p3[i] ? triangle->p1[i] : triangle->p3[i]) : 
-                          (triangle->p2[i] < triangle->p3[i] ? triangle->p2[i] : triangle->p3[i]);
-      min[i] = min[i] <= current_min ? min[i] : current_min;
-      FLOAT current_max = triangle->p1[i] > triangle->p2[i] ? 
-                          (triangle->p1[i] > triangle->p3[i] ? triangle->p1[i] : triangle->p3[i]) : 
-                          (triangle->p2[i] > triangle->p3[i] ? triangle->p2[i] : triangle->p3[i]);
-      max[i] = max[i] >= current_max ? max[i] : current_max;
+      FLOAT iteration_min = triangle->p1[i] < triangle->p2[i] ? 
+                         (triangle->p1[i] < triangle->p3[i] ? triangle->p1[i] : triangle->p3[i]) : 
+                         (triangle->p2[i] < triangle->p3[i] ? triangle->p2[i] : triangle->p3[i]);
+      min[i] = min[i] <= iteration_min ? min[i] : iteration_min;
+      FLOAT iteration_max = triangle->p1[i] > triangle->p2[i] ? 
+                         (triangle->p1[i] > triangle->p3[i] ? triangle->p1[i] : triangle->p3[i]) : 
+                         (triangle->p2[i] > triangle->p3[i] ? triangle->p2[i] : triangle->p3[i]);
+      max[i] = max[i] >= iteration_max ? max[i] : iteration_max;
     }
   }
   root->box = * new BoundingBox(min, max);
@@ -117,15 +120,26 @@ KDTree * KDTree::buildTree(std::vector<Triangle<FLOAT> *> & triangles)  {
 }
 
 bool KDTree::hasNearestTriangle(Vector<FLOAT,3> eye, Vector<FLOAT,3> direction, Triangle<FLOAT> * & nearest_triangle, FLOAT &t, FLOAT &u, FLOAT &v, FLOAT minimum_t) {
-  // from here
-  // TODO: your code
-  // to here
-  if(left != nullptr) {
+  
+  if (!box.intersects(eye, direction)) return false;
 
+  if (left != nullptr && left->hasNearestTriangle(eye, direction, nearest_triangle, t, u, v, minimum_t) && t < minimum_t) {
+    minimum_t = t;
   }
-  if(right != nullptr) {
-
+  if (right != nullptr && right->hasNearestTriangle(eye, direction, nearest_triangle, t, u, v, minimum_t) && t < minimum_t) {
+    minimum_t = t;
   }
 
+  for(Triangle<FLOAT> * triangle : triangles) {
+    stats.no_ray_triangle_intersection_tests++;
+    if(triangle->intersects(eye, direction, t, u, v, minimum_t)) {
+      stats.no_ray_triangle_intersections_found++;
+      if(nearest_triangle == nullptr || t < minimum_t) {
+        nearest_triangle = triangle;
+        minimum_t = t;
+      }
+    }
+  }
+  t = minimum_t;
   return nearest_triangle != nullptr;
 }
