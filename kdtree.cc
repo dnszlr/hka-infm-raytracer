@@ -122,22 +122,19 @@ KDTree * KDTree::buildTree(std::vector<Triangle<FLOAT> *> & triangles)  {
 bool KDTree::hasNearestTriangle(Vector<FLOAT,3> eye, Vector<FLOAT,3> direction, Triangle<FLOAT> * & nearest_triangle, FLOAT &t, FLOAT &u, FLOAT &v, FLOAT minimum_t) {
   
   if (!box.intersects(eye, direction)) return false;
-
+  
   if (left != nullptr && left->hasNearestTriangle(eye, direction, nearest_triangle, t, u, v, minimum_t) && t < minimum_t) {
     minimum_t = t;
   }
   if (right != nullptr && right->hasNearestTriangle(eye, direction, nearest_triangle, t, u, v, minimum_t) && t < minimum_t) {
     minimum_t = t;
   }
-
   for(Triangle<FLOAT> * triangle : triangles) {
     stats.no_ray_triangle_intersection_tests++;
     if(triangle->intersects(eye, direction, t, u, v, minimum_t)) {
       stats.no_ray_triangle_intersections_found++;
-      if(nearest_triangle == nullptr || t < minimum_t) {
-        nearest_triangle = triangle;
-        minimum_t = t;
-      }
+      nearest_triangle = triangle;
+      minimum_t = t;
     }
   }
   t = minimum_t;
