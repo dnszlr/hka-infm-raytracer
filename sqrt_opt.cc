@@ -97,6 +97,8 @@ int main(void) {
     // uncomment next lines for disassembly
     measure_sqrt_time<3>();
     measure_sqrt_time<4>();
+    measure_sqrt_time<5>();
+    measure_sqrt_time<6>();
     return 0;
 }
 
