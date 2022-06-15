@@ -95,10 +95,10 @@ void measure_sqrt_time(void) { // --> Segmentation error occurs here according t
 int main(void) {
     measure_sqrt_time<2>();
     // uncomment next lines for disassembly
-    measure_sqrt_time<3>();
-    measure_sqrt_time<4>();
-    measure_sqrt_time<5>();
-    measure_sqrt_time<6>();
+    //measure_sqrt_time<3>();
+    //measure_sqrt_time<4>();
+    //measure_sqrt_time<5>();
+    //measure_sqrt_time<6>();
     return 0;
 }
 

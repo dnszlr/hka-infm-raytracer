@@ -16,13 +16,13 @@ void BoundingBox::split(BoundingBox & left, BoundingBox & right) {
   left.min = min;
   right.max = max;
   // Case x-axis
-  if(axes[0] > axes[1] && axes[0] > axes[2]) {
+  if(axes[0] >= axes[1] && axes[0] >= axes[2]) {
     FLOAT x = (max[0] + min[0]) * 0.5f;
     left.max = {x, max[1], max[2]};
     right.min = {x, min[1], min[2]};
   } 
   // Case y-axis
-  else if(axes[1] > axes[2]) {
+  else if(axes[1] >= axes[2]) {
     FLOAT y = (max[1] + min[1]) * 0.5f;
     left.max = {max[0], y, max[2]};
     right.min = {min[0], y, min[2]};
