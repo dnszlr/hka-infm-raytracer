@@ -123,10 +123,10 @@ bool KDTree::hasNearestTriangle(Vector<FLOAT,3> eye, Vector<FLOAT,3> direction, 
   
   if (!box.intersects(eye, direction)) return false;
   
-  if (left != nullptr && left->hasNearestTriangle(eye, direction, nearest_triangle, t, u, v, minimum_t) && t < minimum_t) {
+  if (left != nullptr && left->hasNearestTriangle(eye, direction, nearest_triangle, t, u, v, minimum_t)) {
     minimum_t = t;
   }
-  if (right != nullptr && right->hasNearestTriangle(eye, direction, nearest_triangle, t, u, v, minimum_t) && t < minimum_t) {
+  if (right != nullptr && right->hasNearestTriangle(eye, direction, nearest_triangle, t, u, v, minimum_t)) {
     minimum_t = t;
   }
   for(Triangle<FLOAT> * triangle : triangles) {
